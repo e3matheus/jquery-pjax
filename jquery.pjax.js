@@ -265,7 +265,7 @@ function pjax(options) {
     document.activeElement.blur()
 
     if (container.title) document.title = container.title
-    context.html(container.contents)
+    options.replaceContent(context, container.contents)
 
     // FF bug: Won't autofocus fields that are inserted via JS.
     // This behavior is incorrect. So if theres no current focus, autofocus
@@ -439,7 +439,7 @@ function onPjaxPopstate(event) {
         container.trigger('pjax:start', [null, options])
 
         if (state.title) document.title = state.title
-        container.html(contents)
+        pjax.options.replaceContent(container, contents)
         pjax.state = state
 
         container.trigger('pjax:end', [null, options])
@@ -758,6 +758,15 @@ function cachePop(direction, id, value) {
     delete cacheMapping[id]
 }
 
+// Function used to replace content of the container
+//
+// This is the default function for replacing the html
+// of the container. You can pass a function with the
+// same name to replace it
+function replaceContent(container, newContent) {
+  container.html(newContent)
+}
+
 // Public: Find version identifier for the initial page load.
 //
 // Returns String version or undefined.
@@ -793,6 +802,7 @@ function enable() {
     dataType: 'html',
     scrollTo: 0,
     maxCacheLength: 20,
+    replaceContent: replaceContent,
     version: findVersion
   }
   $(window).on('popstate.pjax', onPjaxPopstate)

@@ -44,6 +44,22 @@ if ($.support.pjax) {
     })
   })
 
+  asyncTest("replaces container html with parsed response data", function() {
+    var frame = this.frame
+
+    frame.$('#main').on('pjax:success', function() {
+      equal(frame.$("#main").html().trim(), "How's it going?")
+      start()
+    })
+    frame.$.pjax({
+      url: "hello.html",
+      container: "#main",
+      replaceContent: function(container, newContent) {
+        container.html(newContent[1])
+      }
+    })
+  })
+
   asyncTest("sets title to response title tag", function() {
     var frame = this.frame
 
